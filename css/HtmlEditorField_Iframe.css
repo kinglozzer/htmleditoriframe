@@ -1,0 +1,66 @@
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe .CompositeField {
+	overflow: hidden; *zoom: 1;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe .field#IframeURL {
+	position: relative;
+	float: left;
+	width: 55%;
+	max-width: 512px;
+	border: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe #IframeURL label {
+	position: absolute;
+	left: 8px; top: 13px;
+	font-weight: normal;
+	color: #888;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe #IframeURL .middleColumn {
+	margin-left: 0;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe #IframeURL input.iframeurl {
+	padding-left: 40px;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe {
+	overflow: hidden;
+	margin-top: 13px;
+	padding-top: 15px;
+	*zoom: 1;
+	border: none;
+	background: none;
+	opacity: 0.8;
+	cursor: hand;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe .btn-icon-addMedia {
+	width: 20px; height: 20px;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe:hover,
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe:active {
+	border: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	opacity: 1;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe.ui-state-disabled,
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe.ui-state-disabled:hover,
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe.ui-state-disabled:active {
+	opacity: 0.35;
+	filter: Alpha(Opacity=35);
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe .loading button.add-iframe .ui-icon {
+	background-image: url(../../framework/admin/images/throbber.gif);
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
