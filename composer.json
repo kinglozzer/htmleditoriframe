@@ -1,0 +1,19 @@
+{
+	"name": "kinglozzer/htmleditoriframe",
+	"description": "Adds the ability to insert iframes using SilverStripe's \"Insert Media\" form",
+	"type": "silverstripe-module",
+	"homepage": "https://github.com/kinglozzer/htmleditoriframe",
+	"keywords": ["silverstripe", "iframe", "html", "htmleditorfield", "htmleditor"],
+	"authors": [
+		{
+			"name": "Loz Calver",
+			"email": "lozcalver@bigfork.co.uk"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/kinglozzer/htmleditoriframe/issues"
+	},
+	"require": {
+		"silverstripe/framework": ">=3.1.x-dev,<4.0"
+	}
+}
