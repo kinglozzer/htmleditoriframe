@@ -155,5 +155,14 @@ var ss = ss || {};
 			}
 		});
 
+		/**
+		 * Prevent dimensions from automatically updating to match each other
+		 */
+		$('form.htmleditorfield-mediaform .ss-htmleditorfield-file.iframe .dimensions :input').entwine({
+			onfocusout: function(e) {
+				return false;
+			}
+		});
+
 	});
 })(jQuery);
