@@ -23,7 +23,7 @@ class HtmlEditorField_Iframe extends Extension {
 		// Get the existing form for re-using later
 		$fields = $form->Fields();
 		$controller = $form->Controller();
-		$name = $form->FormName();
+		$name = "{$this->owner->name}/MediaForm";
 		$actions = $form->Actions();
 
 		$numericLabelTmpl = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span>'
