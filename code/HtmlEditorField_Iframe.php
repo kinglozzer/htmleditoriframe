@@ -34,7 +34,7 @@ class HtmlEditorField_Iframe extends Extension {
 				'<h4>' . sprintf($numericLabelTmpl, '1', "Iframe URL") . '</h4>'),
 			$iframeURL = new TextField('IframeURL', 'http://'),
 			new LiteralField('addIframeImage',
-				'<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia"></button>')
+				'<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia">Add url</button>')
 		);
 
 		$iframeURL->addExtraClass('iframeurl');
@@ -43,7 +43,8 @@ class HtmlEditorField_Iframe extends Extension {
 		// $fields->dataFieldByName() doesn't appear to work
 		$tabset = $fields[1]->fieldByName("MediaFormInsertMediaTabs");
 
-		$tabset->push(new Tab('From an Iframe', $fromIframe));
+		$tabset->push($iFrameTab = new Tab('From an Iframe', $fromIframe));
+		$iFrameTab->addExtraClass('htmleditorfield-from-iframe');
 
 		$form = new Form(
 			$controller,
