@@ -5,7 +5,7 @@
 class HtmlEditorField_Iframe extends Extension {
 
 	// Add new allowed action for getting iframe info
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'viewiframe'
 	);
 
@@ -20,12 +20,6 @@ class HtmlEditorField_Iframe extends Extension {
 		Requirements::javascript(HTMLEDITORIFRAME_BASE . '/javascript/HtmlEditorField_Iframe.js');
 		Requirements::css(HTMLEDITORIFRAME_BASE . '/css/HtmlEditorField_Iframe.css');
 
-		// Get the existing form for re-using later
-		$fields = $form->Fields();
-		$controller = $form->Controller();
-		$name = "{$this->owner->name}/MediaForm";
-		$actions = $form->Actions();
-
 		$numericLabelTmpl = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span>'
 			. '<strong class="title">%s</strong></span>';
 
@@ -34,23 +28,18 @@ class HtmlEditorField_Iframe extends Extension {
 				'<h4>' . sprintf($numericLabelTmpl, '1', "Iframe URL") . '</h4>'),
 			$iframeURL = new TextField('IframeURL', 'http://'),
 			new LiteralField('addIframeImage',
-				'<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia"></button>')
+				'<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia">Add url</button>')
 		);
 
 		$iframeURL->addExtraClass('iframeurl');
 		$fromIframe->addExtraClass('content ss-uploadfield from-web');
 		
 		// $fields->dataFieldByName() doesn't appear to work
+		$fields = $form->Fields();
 		$tabset = $fields[1]->fieldByName("MediaFormInsertMediaTabs");
 
-		$tabset->push(new Tab('From an Iframe', $fromIframe));
-
-		$form = new Form(
-			$controller,
-			$name,
-			$fields,
-			$actions
-		);
+		$tabset->push($iFrameTab = new Tab('From an Iframe', $fromIframe));
+		$iFrameTab->addExtraClass('htmleditorfield-from-iframe');
 
 		return $form;
 	}
