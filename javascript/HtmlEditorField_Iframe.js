@@ -24,8 +24,8 @@ var ss = ss || {};
 						self.redraw();
 					});
 				} else if(node.is('img')) {
-					this.showFileView(node.data('url') || node.attr('src')).complete(function() {
-						$(this).updateFromNode(node);
+					this.showFileView(node.data('url') || node.attr('src')).done(function(filefield) {
+						filefield.updateFromNode(node);
 						self.toggleCloseButton();
 						self.redraw();
 					});
