@@ -21,7 +21,10 @@
 }
 
 .htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe #IframeURL .middleColumn {
-	margin-left: 0;
+	background: none;
+    border: medium none;
+    margin: 13px 0 0 0;
+    width: auto;
 }
 
 .htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe #IframeURL input.iframeurl {
@@ -37,6 +40,13 @@
 	background: none;
 	opacity: 0.8;
 	cursor: hand;
+}
+
+.htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe .ui-button-text {
+	float: left;
+	line-height: 20px;
+	margin-left: 10px;
+	margin-top: -5px;
 }
 
 .htmleditorfield-dialog #MediaFormInsertMediaTabs_FromanIframe button.add-iframe .btn-icon-addMedia {
