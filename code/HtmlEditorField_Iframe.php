@@ -1,11 +1,7 @@
 <?php
-/**
- * Adds the ability to insert iframes through SilverStripe's "Insert Media" form
- */
+
 class HtmlEditorField_Iframe extends Extension
 {
-
-    // Add new allowed action for getting iframe info
     private static $allowed_actions = array(
         'viewiframe'
     );
@@ -13,59 +9,69 @@ class HtmlEditorField_Iframe extends Extension
     protected $templateViewFile = 'HtmlEditorField_viewfile';
 
     /**
-     * Don't pass $form in by reference, as doing so and adding a field creates both a div and an 
-     * input with identical IDs - which is both invalid HTML and breaks the ability to click on the
-     * label and focus on the input
+     * @param Form &$form
      */
-    public function updateMediaForm($form)
+    public function updateMediaForm(Form &$form)
     {
         Requirements::javascript(HTMLEDITORIFRAME_BASE . '/javascript/HtmlEditorField_Iframe.js');
         Requirements::css(HTMLEDITORIFRAME_BASE . '/css/HtmlEditorField_Iframe.css');
 
-        $numericLabelTmpl = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span>'
-            . '<strong class="title">%s</strong></span>';
+        $numericLabelTmpl = <<<HTML
+<h4>
+    <span class="step-label">
+        <span class="flyout">1</span><span class="arrow"></span>
+        <strong class="title">Iframe URL</strong>
+    </span>
+</h4>
+HTML;
 
-        $fromIframe = new CompositeField(
-            new LiteralField('headerIframe',
-                '<h4>' . sprintf($numericLabelTmpl, '1', "Iframe URL") . '</h4>'),
-            $iframeURL = new TextField('IframeURL', 'http://'),
-            new LiteralField('addIframeImage',
-                '<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia">Add url</button>')
-        );
+        $actionButton = <<<HTML
+<button class="action ui-action-constructive ui-button field add-iframe" data-icon="addMedia">
+    Add url
+</button>
+HTML;
 
-        $iframeURL->addExtraClass('iframeurl');
-        $fromIframe->addExtraClass('content ss-uploadfield from-web');
-        
-        // $fields->dataFieldByName() doesn't appear to work
+        // HtmlEditorField_Toolbar::MediaForm() creates a FieldList consists of two composite fields,
+        // the first containing titles and the second containing the fields we need
         $fields = $form->Fields();
-        $tabset = $fields[1]->fieldByName("MediaFormInsertMediaTabs");
+        $allFields = $fields->last();
+        $tabset = $allFields->fieldByName("MediaFormInsertMediaTabs");
 
-        $tabset->push($iFrameTab = new Tab('From an Iframe', $fromIframe));
-        $iFrameTab->addExtraClass('htmleditorfield-from-iframe');
-
-        return $form;
+        $tabset->push(
+            Tab::create(
+                'From an Iframe',
+                CompositeField::create(
+                    LiteralField::create('headerIframe', $numericLabelTmpl),
+                    TextField::create('IframeURL', 'Enter URL')
+                        ->addExtraClass('iframeurl'),
+                    LiteralField::create('addIframeImage', $actionButton)
+                )->addExtraClass('content ss-uploadfield from-web')
+            )->addExtraClass('htmleditorfield-from-iframe')
+        );
     }
 
     /**
      * View iframe info.
      *
      * @see HtmlEditorField_Toolbar::viewfile()
+     * @param SS_HTTPRequest $request
+     * @return HTMLText
+     * @throws LogicException
      */
-    public function viewiframe($request)
+    public function viewiframe(SS_HTTPRequest $request)
     {
-        // TODO Would be cleaner to consistently pass URL for both local and remote files,
-        // but GridField doesn't allow for this kind of metadata customization at the moment.
-        if ($url = $request->getVar('FileURL')) {
+        if ($url = $request->getVar('IframeURL')) {
             $url = $url;
-            $file = new File(array(
-                'Title' => basename($url),
-                'Filename' => $url
+            $data = ArrayData::create(array(
+                'Title' => $url,
+                'Width' => $request->getVar('Width') ?: null,
+                'Height' => $request->getVar('Height') ?: null
             ));
         } else {
-            throw new LogicException('Need either "ID" or "FileURL" parameter to identify the file');
+            throw new LogicException('Need an "IframeURL" parameter to identify the iframe');
         }
-    
-        $fileWrapper = new HtmlEditorField_IframeEmbed($url, $file);
+
+        $fileWrapper = new HtmlEditorField_IframeEmbed($url, $data);
 
         $fields = $this->getFieldsForIframe($url, $fileWrapper);
         $data = array('Fields' => $fields);
@@ -81,7 +87,7 @@ class HtmlEditorField_Iframe extends Extension
     protected function getFieldsForIframe($url, $file)
     {
         $thumbnailURL = FRAMEWORK_DIR . '/images/default_media.png';
-        
+
         $fields = new FieldList(
             $filePreview = CompositeField::create(
                 CompositeField::create(
@@ -132,7 +138,7 @@ class HtmlEditorField_Iframe extends Extension
         $urlField->dontEscape = true;
 
         $fields->push(new HiddenField('URL', false, $url));
-        
+
         return $fields;
     }
 }
