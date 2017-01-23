@@ -31,11 +31,11 @@ HTML;
 </button>
 HTML;
 
-        // HtmlEditorField_Toolbar::MediaForm() creates a FieldList consists of two composite fields,
-        // the first containing titles and the second containing the fields we need
         $fields = $form->Fields();
-        $allFields = $fields->last();
-        $tabset = $allFields->fieldByName("MediaFormInsertMediaTabs");
+        // HtmlEditorField_Toolbar::MediaForm() creates a FieldList consists of two composite fields,
+        // the first containing headings and the second containing the fields we need
+        $actualFields = $fields->last();
+        $tabset = $actualFields->fieldByName("MediaFormInsertMediaTabs");
 
         $tabset->push(
             Tab::create(
@@ -82,31 +82,32 @@ HTML;
     /**
      * Return field list for iframe insert/update form
      *
-     * @see HtmlEditorField_Toolbar::getFieldsForOembed()
+     * @param string $url
+     * @param  HtmlEditorField_IframeEmbed $iframe
+     * @return FieldList
      */
-    protected function getFieldsForIframe($url, $file)
+    protected function getFieldsForIframe($url, HtmlEditorField_IframeEmbed $iframe)
     {
         $thumbnailURL = FRAMEWORK_DIR . '/images/default_media.png';
 
-        $fields = new FieldList(
-            $filePreview = CompositeField::create(
+        $fields = FieldList::create(
+            CompositeField::create(
                 CompositeField::create(
-                    new LiteralField(
-                        "ImageFull",
-                        "<img id='thumbnailImage' class='thumbnail-preview' "
-                            . "src='{$thumbnailURL}?r=" . rand(1, 100000) . "' alt='{$file->Name}' />\n"
+                    LiteralField::create(
+                        'ImageFull',
+                        '<img class="thumbnail-preview" src="' . $thumbnailURL . '" alt="" />'
                     )
-                )->setName("FilePreviewImage")->addExtraClass('cms-file-info-preview'),
+                )->setName('FilePreviewImage')->addExtraClass('cms-file-info-preview'),
                 CompositeField::create(
                     CompositeField::create(
-                        new ReadonlyField("FileType", _t('AssetTableField.TYPE', 'File type') . ':', $file->Type),
+                        ReadonlyField::create('FileType', _t('AssetTableField.TYPE', 'File type') . ':', $iframe->Type),
                         $urlField = ReadonlyField::create('ClickableURL', _t('AssetTableField.URL', 'URL'),
                             sprintf('<a href="%s" target="_blank" class="file">%s</a>', $url, $url)
                         )->addExtraClass('text-wrap')
                     )
-                )->setName("FilePreviewData")->addExtraClass('cms-file-info-data')
-            )->setName("FilePreview")->addExtraClass('cms-file-info'),
-            new TextField('CaptionText', _t('HtmlEditorField.CAPTIONTEXT', 'Caption text')),
+                )->setName('FilePreviewData')->addExtraClass('cms-file-info-data')
+            )->setName('FilePreview')->addExtraClass('cms-file-info'),
+            TextField::create('CaptionText', _t('HtmlEditorField.CAPTIONTEXT', 'Caption text')),
             DropdownField::create(
                 'CSSClass',
                 _t('HtmlEditorField.CSSCLASS', 'Alignment / style'),
@@ -118,26 +119,30 @@ HTML;
                 )
             )->addExtraClass('last')
         );
-        if ($file->Width != null) {
+
+        $urlField->dontEscape = true;
+
+        if ($iframe->Width != null) {
             $fields->push(
                 FieldGroup::create(
                     _t('HtmlEditorField.IMAGEDIMENSIONS', 'Dimensions'),
                     TextField::create(
                         'Width',
                         _t('HtmlEditorField.IMAGEWIDTHPX', 'Width'),
-                        $file->Width
+                        $iframe->Width
                     )->setMaxLength(5),
                     TextField::create(
                         'Height',
                         _t('HtmlEditorField.IMAGEHEIGHTPX', 'Height'),
-                        $file->Height
+                        $iframe->Height
                     )->setMaxLength(5)
                 )->addExtraClass('dimensions last')
             );
         }
-        $urlField->dontEscape = true;
 
         $fields->push(new HiddenField('URL', false, $url));
+
+        $this->owner->extend('updateFieldsForIframe', $fields, $url, $iframe);
 
         return $fields;
     }
